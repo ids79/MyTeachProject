@@ -6,6 +6,8 @@ import (
 	"math"
 	"os"
 	"strings"
+
+	"golang.org/x/tour/tree"
 )
 
 type ErrNegativeSqrt float64
@@ -116,6 +118,16 @@ func rot13(r byte) byte {
 	return r
 }
 
+func Walk(tr *tree.Tree, ch chan int) {
+	if tr.Left != nil {
+		Walk(tr.Left, ch)
+	}
+	ch <- tr.Value
+	if tr.Right != nil {
+		Walk(tr.Right, ch)
+	}
+}
+
 func main() {
 	//fmt.Println(Sqrt(2))
 	// fmt.Println(math.Sqrt(2))
@@ -147,5 +159,14 @@ func main() {
 	s := strings.NewReader("Lbh penpxrq gur pbqr!\n")
 	r := rot13Reader{s}
 	io.Copy(os.Stdout, &r)
+
+	ch := make(chan int)
+	go func() {
+		for c := range ch {
+			fmt.Println(c)
+		}
+	}()
+	Walk(tree.New(1), ch)
+	close(ch)
 
 }

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест по математике - 8 класс</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .test-container {
+            width: 90%;
+            max-width: 700px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .test-header h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .test-header p {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 6px;
+            width: 100%;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .question-container {
+            padding: 30px;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .question-number {
+            font-size: 1.1em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: #f5f5f5;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background: #e8e8e8;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #e3f2fd;
+            border-color: #667eea;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .option label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .nav-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .finish-btn {
+            background: #4CAF50;
+        }
+
+        .finish-btn:hover {
+            background: #45a049;
+        }
+
+        .results-container {
+            display: none;
+            padding: 30px;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+
+        .results-score {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .results-details {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .result-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .result-item.correct {
+            background: #e8f5e8;
+            border-left-color: #4CAF50;
+        }
+
+        .result-item.incorrect {
+            background: #fce4e4;
+            border-left-color: #f44336;
+        }
+
+        .result-item.unanswered {
+            background: #fff3e0;
+            border-left-color: #ff9800;
+        }
+
+        .restart-btn {
+            display: block;
+            margin: 20px auto;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 600px) {
+            .question-container {
+                padding: 20px;
+                min-height: 350px;
+            }
+
+            .question-text {
+                font-size: 1em;
+            }
+
+            .navigation-buttons {
+                padding: 15px 20px;
+                gap: 10px;
+            }
+
+            .nav-btn {
+                padding: 8px 15px;
+                font-size: 0.9em;
+                min-width: 80px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-container" id="testContainer">
+        <div class="test-header">
+            <h1>Тест по математике</h1>
+            <p>8 класс - Алгебра и Геометрия</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div id="questionContainer" class="question-container">
+            <!-- Вопросы будут здесь -->
+        </div>
+
+        <div class="navigation-buttons" id="navigationButtons">
+            <button class="nav-btn" id="prevBtn" onclick="prevQuestion()">← Назад</button>
+            <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">Далее →</button>
+            <button class="nav-btn finish-btn" id="finishBtn" onclick="finishTest()" style="display: none;">Завершить
+                тест</button>
+        </div>
+
+        <div id="resultsContainer" class="results-container" style="display: none;">
+            <!-- Результаты будут здесь -->
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                subject: "Алгебра",
+                question: "Решите уравнение: 2x + 5 = 17",
+                options: ["x = 5", "x = 6", "x = 7", "x = 8"],
+                correct: 1
+            },
+            {
+                subject: "Алгебра",
+                question: "Упростите выражение: 3(x + 2) - 2(x - 1)",
+                options: ["x + 8", "x + 4", "5x + 4", "x + 6"],
+                correct: 0
+            },
+            {
+                subject: "Алгебра",
+                question: "Найдите значение выражения: (-3)² + 2³",
+                options: ["17", "1", "-1", "13"],
+                correct: 0
+            },
+            {
+                subject: "Геометрия",
+                question: "Сумма углов треугольника равна:",
+                options: ["90°", "180°", "270°", "360°"],
+                correct: 1
+            },
+            {
+                subject: "Алгебра",
+                question: "Решите неравенство: 3x - 7 < 2",
+                options: ["x < 3", "x > 3", "x < 5", "x > 5"],
+                correct: 0
+            },
+            {
+                subject: "Геометрия",
+                question: "Площадь прямоугольника со сторонами 5 см и 8 см равна:",
+                options: ["13 см²", "26 см²", "40 см²", "80 см²"],
+                correct: 2
+            },
+            {
+                subject: "Алгебра",
+                question: "Разложите на множители: x² - 9",
+                options: ["(x - 3)²", "(x + 3)(x - 3)", "(x + 9)(x - 1)", "(x - 9)(x + 1)"],
+                correct: 1
+            },
+            {
+                subject: "Геометрия",
+                question: "Периметр квадрата со стороной 6 см равен:",
+                options: ["12 см", "18 см", "24 см", "36 см"],
+                correct: 2
+            },
+            {
+                subject: "Алгебра",
+                question: "Решите систему уравнений: x + y = 5, x - y = 1",
+                options: ["x = 3, y = 2", "x = 2, y = 3", "x = 4, y = 1", "x = 1, y = 4"],
+                correct: 0
+            },
+            {
+                subject: "Геометрия",
+                question: "В прямоугольном треугольнике катеты равны 3 см и 4 см. Гипотенуза равна:",
+                options: ["5 см", "6 см", "7 см", "8 см"],
+                correct: 0
+            },
+            {
+                subject: "Алгебра",
+                question: "Найдите корни уравнения: x² - 5x + 6 = 0",
+                options: ["x₁ = 2, x₂ = 3", "x₁ = 1, x₂ = 6", "x₁ = -2, x₂ = -3", "x₁ = -1, x₂ = -6"],
+                correct: 0
+            },
+            {
+                subject: "Геометрия",
+                question: "Площадь круга с радиусом 4 см равна (π ≈ 3,14):",
+                options: ["12,56 см²", "25,12 см²", "50,24 см²", "100,48 см²"],
+                correct: 2
+            },
+            {
+                subject: "Алгебра",
+                question: "Упростите: (2a²b)³",
+                options: ["6a⁶b³", "8a⁶b³", "8a⁵b³", "6a⁵b³"],
+                correct: 1
+            },
+            {
+                subject: "Геометрия",
+                question: "Диагонали ромба:",
+                options: ["Равны между собой", "Перпендикулярны", "Параллельны", "Не пересекаются"],
+                correct: 1
+            },
+            {
+                subject: "Алгебра",
+                question: "Решите уравнение: |x - 3| = 7",
+                options: ["x = 10", "x = -4", "x = 10 или x = -4", "x = 7 или x = -7"],
+                correct: 2
+            },
+            {
+                subject: "Геометрия",
+                question: "Средняя линия трапеции с основаниями 8 см и 12 см равна:",
+                options: ["8 см", "10 см", "12 см", "20 см"],
+                correct: 1
+            },
+            {
+                subject: "Алгебра",
+                question: "Функция y = 2x - 3. Найдите значение y при x = 4:",
+                options: ["y = 5", "y = 8", "y = -5", "y = 11"],
+                correct: 0
+            },
+            {
+                subject: "Геометрия",
+                question: "В равнобедренном треугольнике боковая сторона равна 10 см, а основание 12 см. Высота, проведенная к основанию, равна:",
+                options: ["6 см", "7 см", "8 см", "9 см"],
+                correct: 2
+            },
+            {
+                subject: "Алгебра",
+                question: "Сократите дробь: (x² - 4) / (x² + 2x)",
+                options: ["(x - 2) / x", "(x + 2) / x", "(x - 2) / (x + 2)", "1 / x"],
+                correct: 0
+            },
+            {
+                subject: "Геометрия",
+                question: "Объем куба с ребром 3 см равен:",
+                options: ["9 см³", "18 см³", "27 см³", "81 см³"],
+                correct: 2
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = new Array(questions.length).fill(null);
+
+        function initTest() {
+            showQuestion(currentQuestion);
+            updateProgress();
+            updateNavigation();
+        }
+
+        function showQuestion(index) {
+            const container = document.getElementById('questionContainer');
+            const question = questions[index];
+
+            container.innerHTML = `
+                <div class="question-number">
+                    Вопрос ${index + 1} из ${questions.length} • ${question.subject}
+                </div>
+                <div class="question-text">${question.question}</div>
+                <div class="options-container">
+                    ${question.options.map((option, i) => `
+                        <div class="option ${answers[index] === i ? 'selected' : ''}" onclick="selectOption(${i})">
+                            <input type="radio" name="answer" value="${i}" ${answers[index] === i ? 'checked' : ''}>
+                            <label>${option}</label>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            updateProgress();
+            updateNavigation();
+        }
+
+        function selectOption(optionIndex) {
+            answers[currentQuestion] = optionIndex;
+            showQuestion(currentQuestion);
+        }
+
+        function updateNavigation() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const finishBtn = document.getElementById('finishBtn');
+
+            prevBtn.disabled = currentQuestion === 0;
+
+            if (currentQuestion === questions.length - 1) {
+                nextBtn.style.display = 'none';
+                finishBtn.style.display = 'block';
+            } else {
+                nextBtn.style.display = 'block';
+                finishBtn.style.display = 'none';
+            }
+        }
+
+        function updateProgress() {
+            const progressFill = document.getElementById('progressFill');
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            progressFill.style.width = progress + '%';
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        }
+
+        function finishTest() {
+            const confirmed = confirm('Вы уверены, что хотите завершить тест?');
+            if (confirmed) {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('questionContainer').style.display = 'none';
+            document.getElementById('navigationButtons').style.display = 'none';
+            document.getElementById('resultsContainer').style.display = 'block';
+
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unansweredCount = 0;
+
+            const resultsHTML = questions.map((question, index) => {
+                const userAnswer = answers[index];
+                let status, statusText, userAnswerText, correctAnswerText;
+
+                if (userAnswer === null) {
+                    status = 'unanswered';
+                    statusText = 'Нет ответа';
+                    userAnswerText = 'Не выбран';
+                    unansweredCount++;
+                } else if (userAnswer === question.correct) {
+                    status = 'correct';
+                    statusText = '✓ Правильно';
+                    userAnswerText = question.options[userAnswer];
+                    correctCount++;
+                } else {
+                    status = 'incorrect';
+                    statusText = '✗ Неправильно';
+                    userAnswerText = question.options[userAnswer];
+                    incorrectCount++;
+                }
+
+                correctAnswerText = question.options[question.correct];
+
+                return `
+                    <div class="result-item ${status}">
+                        <strong>Вопрос ${index + 1} (${question.subject}):</strong> ${question.question}<br>
+                        <strong>Ваш ответ:</strong> ${userAnswerText}<br>
+                        <strong>Правильный ответ:</strong> ${correctAnswerText}<br>
+                        <strong>Статус:</strong> ${statusText}
+                    </div>
+                `;
+            }).join('');
+
+            const percentage = Math.round((correctCount / questions.length) * 100);
+            let grade = '';
+            let gradeColor = '';
+
+            if (percentage >= 90) {
+                grade = 'Отлично! 🌟';
+                gradeColor = '#4CAF50';
+            } else if (percentage >= 75) {
+                grade = 'Хорошо! 👍';
+                gradeColor = '#8BC34A';
+            } else if (percentage >= 50) {
+                grade = 'Удовлетворительно 📚';
+                gradeColor = '#FF9800';
+            } else {
+                grade = 'Нужно повторить материал 📖';
+                gradeColor = '#f44336';
+            }
+
+            document.getElementById('resultsContainer').innerHTML = `
+                <div class="results-header">
+                    <h2>Результаты теста</h2>
+                    <div class="results-score">${correctCount} из ${questions.length} (${percentage}%)</div>
+                    <div style="font-size: 1.2em; color: ${gradeColor}; font-weight: bold;">${grade}</div>
+                    <div style="margin-top: 10px; font-size: 0.9em;">
+                        Правильных: ${correctCount} | Неправильных: ${incorrectCount} | Без ответа: ${unansweredCount}
+                    </div>
+                </div>
+                <div class="results-details">
+                    ${resultsHTML}
+                </div>
+                <button class="restart-btn" onclick="restartTest()">Пройти тест заново</button>
+            `;
+        }
+
+        function restartTest() {
+            currentQuestion = 0;
+            answers = new Array(questions.length).fill(null);
+
+            document.getElementById('questionContainer').style.display = 'flex';
+            document.getElementById('navigationButtons').style.display = 'flex';
+            document.getElementById('resultsContainer').style.display = 'none';
+
+            initTest();
+        }
+
+        // Инициализация теста при загрузке страницы
+        window.onload = function () {
+            initTest();
+        };
+    </script>
+</body>
+
+</html>
